@@ -1,91 +1,168 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { createGymLeader } from '../services/calls';
+import { addGymLeader } from '../services/calls';
 
-const AddGymLeaderForm = ({ onAdd }) => {
-    const [name, setName] = useState('');
-    const [gym, setGym] = useState('');
-    const [badge, setBadge] = useState('');
-    const [description, setDescription] = useState('');
+const AddGymLeaderForm = () => {
+    const initialFormData = {
+        name: '',
+        gym: '',
+        badge: '',
+        pokemon: [
+            { name: '', level: '' },
+            { name: '', level: '' },
+            { name: '', level: '' },
+            { name: '', level: '' },
+            { name: '', level: '' }
+        ],
+        reward: { tm: '', money: '' },
+        description: ''
+    };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const newGymLeader = { name, gym, badge, description, pokemon: [] };
+    const [formData, setFormData] = useState(initialFormData);
 
+    const handleChange = (e, index) => {
+        const { name, value } = e.target;
+        if (name === 'pokemonName' || name === 'pokemonLevel') {
+            const updatedPokemon = [...formData.pokemon];
+            updatedPokemon[index][name === 'pokemonName' ? 'name' : 'level'] = value;
+            setFormData({ ...formData, pokemon: updatedPokemon });
+        } else if (name === 'tm' || name === 'money') {
+            setFormData({
+                ...formData,
+                reward: { ...formData.reward, [name]: value }
+            });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            await createGymLeader(newGymLeader);
-            onAdd();
-            setName('');
-            setGym('');
-            setBadge('');
-            setDescription('');
+            const newLeader = await addGymLeader(formData);
+            console.log('New Gym Leader added:', newLeader);
+            // Optionally, reset form state or show success message
+            setFormData(initialFormData);
         } catch (error) {
-            console.error("Error adding gym leader:", error);
+            console.error('Error adding Gym Leader:', error);
+            // Handle error (e.g., show error message to user)
         }
     };
 
     return (
-        <FormContainer onSubmit={handleSubmit}>
-            <FormField>
+        <FormContainer>
+            <h2>Add New Gym Leader</h2>
+            <Form onSubmit={handleSubmit}>
                 <label>Name:</label>
                 <input
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     required
                 />
-            </FormField>
-            <FormField>
                 <label>Gym:</label>
                 <input
                     type="text"
-                    value={gym}
-                    onChange={(e) => setGym(e.target.value)}
+                    name="gym"
+                    value={formData.gym}
+                    onChange={handleChange}
                     required
                 />
-            </FormField>
-            <FormField>
                 <label>Badge:</label>
                 <input
                     type="text"
-                    value={badge}
-                    onChange={(e) => setBadge(e.target.value)}
+                    name="badge"
+                    value={formData.badge}
+                    onChange={handleChange}
                     required
                 />
-            </FormField>
-            <FormField>
+                <label>Team of Pokémon:</label>
+                {formData.pokemon.map((poke, index) => (
+                    <div key={index}>
+                        <input
+                            type="text"
+                            name="pokemonName"
+                            placeholder="Pokemon Name"
+                            value={poke.name}
+                            onChange={(e) => handleChange(e, index)}
+                            required
+                        />
+                        <input
+                            type="number"
+                            name="pokemonLevel"
+                            placeholder="Level"
+                            value={poke.level}
+                            onChange={(e) => handleChange(e, index)}
+                            required
+                        />
+                    </div>
+                ))}
+                <label>Reward:</label>
+                <input
+                    type="text"
+                    name="tm"
+                    placeholder="TM"
+                    value={formData.reward.tm}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="number"
+                    name="money"
+                    placeholder="Money"
+                    value={formData.reward.money}
+                    onChange={handleChange}
+                    required
+                />
                 <label>Description:</label>
                 <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
                     required
                 />
-            </FormField>
-            <button type="submit">Add Gym Leader</button>
+                <button type="submit">Add Gym Leader</button>
+            </Form>
         </FormContainer>
     );
 };
 
 export default AddGymLeaderForm;
 
-const FormContainer = styled.form`
-    margin: 20px 0;
+const FormContainer = styled.div`
+    width: 80%;
+    margin: 20px auto;
     padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
 `;
 
-const FormField = styled.div`
-    margin-bottom: 10px;
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
 
     label {
-        display: block;
-        margin-bottom: 5px;
+        margin-top: 10px;
+        font-weight: bold;
     }
 
     input, textarea {
-        width: 100%;
+        margin-top: 5px;
         padding: 8px;
-        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
     }
 `;

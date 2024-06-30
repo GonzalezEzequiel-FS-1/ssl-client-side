@@ -1,87 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { updateGymLeader } from '../services/calls';
 
 const UpdateGymLeaderForm = ({ leader, onUpdate }) => {
-    const [name, setName] = useState(leader.name);
-    const [gym, setGym] = useState(leader.gym);
-    const [badge, setBadge] = useState(leader.badge);
-    const [description, setDescription] = useState(leader.description);
+  const [name, setName] = useState('');
+  const [gym, setGym] = useState('');
+  const [badge, setBadge] = useState('');
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(true);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const updatedGymLeader = { ...leader, name, gym, badge, description };
+  useEffect(() => {
+    if (leader) {
+      setName(leader.name || '');
+      setGym(leader.gym || '');
+      setBadge(leader.badge || '');
+      setDescription(leader.description || '');
+      setLoading(false); // Set loading to false once data is loaded
+    }
+  }, [leader]); // Ensure useEffect runs when leader changes
 
-        try {
-            await updateGymLeader(updatedGymLeader);
-            onUpdate();
-        } catch (error) {
-            console.error("Error updating gym leader:", error);
-        }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const updatedLeader = {
+      _id: leader._id, // Ensure _id is included in the update object
+      name,
+      gym,
+      badge,
+      description,
     };
+    onUpdate(updatedLeader); // Pass updated leader object to parent component for update
+  };
 
-    return (
-        <FormContainer onSubmit={handleSubmit}>
-            <FormField>
-                <label>Name:</label>
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-            </FormField>
-            <FormField>
-                <label>Gym:</label>
-                <input
-                    type="text"
-                    value={gym}
-                    onChange={(e) => setGym(e.target.value)}
-                    required
-                />
-            </FormField>
-            <FormField>
-                <label>Badge:</label>
-                <input
-                    type="text"
-                    value={badge}
-                    onChange={(e) => setBadge(e.target.value)}
-                    required
-                />
-            </FormField>
-            <FormField>
-                <label>Description:</label>
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-            </FormField>
-            <button type="submit">Update Gym Leader</button>
-        </FormContainer>
-    );
+  if (loading) {
+    return <LoadingContainer>Loading...</LoadingContainer>; // Show loading indicator while fetching data
+  }
+
+  return (
+    <Container>
+      <h2>Update Gym Leader: {leader.name}</h2>
+      <Form onSubmit={handleSubmit}>
+        <Label>
+          Name:
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </Label>
+        <Label>
+          Gym:
+          <Input
+            type="text"
+            value={gym}
+            onChange={(e) => setGym(e.target.value)}
+            required
+          />
+        </Label>
+        <Label>
+          Badge:
+          <Input
+            type="text"
+            value={badge}
+            onChange={(e) => setBadge(e.target.value)}
+            required
+          />
+        </Label>
+        <Label>
+          Description:
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </Label>
+        <SubmitButton type="submit">Update Leader</SubmitButton>
+      </Form>
+    </Container>
+  );
 };
 
 export default UpdateGymLeaderForm;
 
-const FormContainer = styled.form`
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
+const Container = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
 `;
 
-const FormField = styled.div`
-    margin-bottom: 10px;
+const LoadingContainer = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+`;
 
-    label {
-        display: block;
-        margin-bottom: 5px;
-    }
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 
-    input, textarea {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-    }
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Input = styled.input`
+  padding: 5px;
+`;
+
+const Textarea = styled.textarea`
+  padding: 5px;
+`;
+
+const SubmitButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
