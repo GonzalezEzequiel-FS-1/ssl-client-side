@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const PokemonDetails = ({ pokemon }) => {
     if (!pokemon) {
-        return null; // If no pokemon data, don't render anything
+        return null;
     }
 
     return (
@@ -14,7 +14,6 @@ const PokemonDetails = ({ pokemon }) => {
             <Info>Height: {pokemon.height}</Info>
             <Info>Weight: {pokemon.weight}</Info>
             <Info>Weaknesses: {pokemon.weaknesses.join(', ')}</Info>
-            {/* Render other details as needed */}
         </Container>
     );
 };

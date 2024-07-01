@@ -7,31 +7,31 @@ const UpdateGymLeaderForm = ({ leader, onUpdate }) => {
   const [badge, setBadge] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     if (leader) {
       setName(leader.name || '');
       setGym(leader.gym || '');
       setBadge(leader.badge || '');
       setDescription(leader.description || '');
-      setLoading(false); // Set loading to false once data is loaded
+      setLoading(false);
     }
-  }, [leader]); // Ensure useEffect runs when leader changes
+  }, [leader]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedLeader = {
-      _id: leader._id, // Ensure _id is included in the update object
+      _id: leader._id,
       name,
       gym,
       badge,
       description,
     };
-    onUpdate(updatedLeader); // Pass updated leader object to parent component for update
+    onUpdate(updatedLeader);
   };
 
   if (loading) {
-    return <LoadingContainer>Loading...</LoadingContainer>; // Show loading indicator while fetching data
+    return <LoadingContainer>Loading...</LoadingContainer>;
   }
 
   return (

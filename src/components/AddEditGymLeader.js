@@ -10,14 +10,6 @@ const AddEditGymLeader = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Implement your API call for adding/editing gym leader here
-    // Example:
-    // try {
-    //   await addGymLeader({ name, gym, badge, description });
-    //   // Optionally, clear the form or show a success message
-    // } catch (error) {
-    //   console.error('Error adding/editing gym leader:', error);
-    // }
   };
 
   return (

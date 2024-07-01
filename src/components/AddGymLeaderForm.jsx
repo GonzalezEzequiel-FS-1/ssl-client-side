@@ -41,11 +41,9 @@ const AddGymLeaderForm = () => {
         try {
             const newLeader = await addGymLeader(formData);
             console.log('New Gym Leader added:', newLeader);
-            // Optionally, reset form state or show success message
             setFormData(initialFormData);
         } catch (error) {
             console.error('Error adding Gym Leader:', error);
-            // Handle error (e.g., show error message to user)
         }
     };
 
@@ -136,6 +134,9 @@ const FormContainer = styled.div`
     padding: 20px;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const Form = styled.form`

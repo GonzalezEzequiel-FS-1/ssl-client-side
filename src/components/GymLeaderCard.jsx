@@ -20,7 +20,7 @@ const GymLeaderCard = ({ leader, onDelete, onEdit }) => {
 
         fetchPokemonDetails();
     }, [leader.pokemon]);
-
+    
     return (
         <LeaderCard>
             <LeaderName>{leader.name}</LeaderName>
@@ -69,10 +69,12 @@ const Info = styled.p`
 const PokemonList = styled.ul`
     list-style-type: none;
     padding: 0;
+    width:20rem;
 `;
 
 const PokemonDetailsContainer = styled.li`
     margin-bottom: 10px;
+    display:flex;
 `;
 
 const ButtonContainer = styled.div`

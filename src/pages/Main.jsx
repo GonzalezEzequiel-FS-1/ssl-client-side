@@ -65,6 +65,9 @@ const Container = styled.div`
     padding: 20px;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const LeadersContainer = styled.div`

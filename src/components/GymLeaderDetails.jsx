@@ -1,5 +1,3 @@
-// GymLeaderDetails.jsx
-
 import React from 'react';
 import EditGymLeaderForm from './EditGymLeaderForm';
 

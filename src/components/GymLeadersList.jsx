@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { getAll, deleteByName } from '../services/calls'; // Adjust import path as per your file structure
+import { getAll, deleteByName } from '../services/calls';
+import SearchGymLeaders from './SearchGymLeaders'; // Import the Search component
 
 const GymLeadersList = () => {
   const [gymLeaders, setGymLeaders] = useState([]);
+  const [filteredLeaders, setFilteredLeaders] = useState([]);
 
   useEffect(() => {
     fetchGymLeaders();
@@ -12,7 +14,8 @@ const GymLeadersList = () => {
   const fetchGymLeaders = async () => {
     try {
       const data = await getAll();
-      setGymLeaders(data); // Assuming data is an array of gym leaders
+      setGymLeaders(data);
+      setFilteredLeaders(data);
     } catch (error) {
       console.error('Error fetching gym leaders:', error);
     }
@@ -27,9 +30,17 @@ const GymLeadersList = () => {
     }
   };
 
+  const handleSearch = (searchTerm) => {
+    const filtered = gymLeaders.filter((leader) =>
+      leader.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredLeaders(filtered);
+  };
+
   return (
     <Container>
-      {gymLeaders.map((leader) => (
+      <SearchGymLeaders onSearch={handleSearch} />
+      {filteredLeaders.map((leader) => (
         <GymLeader key={leader._id}>
           <LeaderName>{leader.name}</LeaderName>
           <Info><strong>Gym:</strong> {leader.gym}</Info>
@@ -79,4 +90,3 @@ const DeleteButton = styled.button`
   padding: 5px 10px;
   cursor: pointer;
 `;
-
