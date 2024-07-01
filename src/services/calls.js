@@ -36,6 +36,7 @@ export const createGymLeader = async (gymLeader) => {
 export const updateGymLeader = async (gymLeader) => {
     try {
         const response = await axios.put(`${GMLD_URL}/edit/${gymLeader._id}`, gymLeader);
+        console.log(response)
         return response.data.data;
     } catch (error) {
         console.error("Error updating gym leader:", error);
